@@ -131,8 +131,10 @@ h1.page-title {
 .picker .ava { font-size: 96px; display: block; margin-bottom: 6px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.18)); }
 .picker .name { display: block; font-size: 46px; font-weight: 900; }
 .picker .age { display: block; font-size: 22px; opacity: .95; margin-top: 6px; }
-.picker.shai { background: linear-gradient(160deg, #ff7eb3, #ff5d8f 60%, #ff4d6d); }
-.picker.tom  { background: linear-gradient(160deg, #4fd1c5, #20c4c4 60%, #1aa7a7); }
+.picker.shai    { background: linear-gradient(160deg, #ff7eb3, #ff5d8f 60%, #ff4d6d); }
+.picker.lia     { background: linear-gradient(160deg, #c08bf0, #9b5de5 60%, #7c3aed); }
+.picker.yonatan { background: linear-gradient(160deg, #84adff, #4d8bff 60%, #2f6bff); }
+.picker.tom     { background: linear-gradient(160deg, #4fd1c5, #20c4c4 60%, #1aa7a7); }
 
 /* ---------- רשת המשחקים ---------- */
 .games-grid {
