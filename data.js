@@ -59,7 +59,7 @@ const VOCAB = {
       { en: "pink",   he: "ורוד",  emoji: "🩷" },
       { en: "black",  he: "שחור",  emoji: "⚫" },
       { en: "white",  he: "לבן",   emoji: "⚪" },
-      { en: "brown",  he: "חום",   emoji: "🟤" },
+      { en: "brown",  he: "חוּם",   emoji: "🟤" },
     ],
   },
 
