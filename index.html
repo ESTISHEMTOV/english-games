@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>משחקים באנגלית 🎈</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .hero { font-size: clamp(54px, 12vw, 110px); line-height: 1; margin: 18px 0 4px; }
+    .float { display:inline-block; animation: bob 3s ease-in-out infinite; }
+    .float:nth-child(2){ animation-delay:.4s } .float:nth-child(3){ animation-delay:.8s }
+    @keyframes bob { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-14px) } }
+    .footer-note { margin-top: 34px; color: var(--ink-soft); font-size: 15px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <span class="float">🎈</span><span class="float">🇬🇧</span><span class="float">⭐</span>
+    </div>
+    <h1 class="page-title">משחקים באנגלית</h1>
+    <p class="subtitle">בחרו מי משחקת עכשיו 👇</p>
+
+    <div class="pickers">
+      <button class="picker shai" onclick="go('shai.html')">
+        <span class="ava">🧒</span>
+        <span class="name">שי</span>
+        <span class="age">בת 5 · מתחילים</span>
+      </button>
+      <button class="picker tom" onclick="go('tom.html')">
+        <span class="ava">👧</span>
+        <span class="name">תום</span>
+        <span class="age">בת 9 · מתקדמים</span>
+      </button>
+    </div>
+
+    <p class="footer-note" id="micTip"></p>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    function go(page) { soundPop(); primeAudio(); setTimeout(() => (location.href = page), 120); }
+    // ברכת פתיחה קולית קצרה בעברית בלחיצה ראשונה
+    document.addEventListener("pointerdown", () => speakHe("שלום! בחרו מי משחקת"), { once: true });
+
+    // טיפ לגבי מיקרופון — תלוי אם נפתח דרך השרת (localhost) או ישירות מהקובץ
+    const tip = document.getElementById("micTip");
+    if (window.isSecureContext) {
+      tip.innerHTML = "🎤 המיקרופון מוכן! בלחיצה הראשונה אשרו את הבקשה (Allow) כדי לחזור על המילים ולקבל משוב על ההגייה.";
+    } else {
+      tip.innerHTML = "💡 כדי לחזור על המילים עם משוב על ההגייה — סגרו ופתחו את המשחק עם הקובץ <b>הפעלה.bat</b> שבתיקייה (נפתח ב-Chrome עם מיקרופון). שאר המשחקים עובדים גם ככה.";
+    }
+  </script>
+</body>
+</html>
