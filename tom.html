@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Tom's English Games 👧</title>
-  <link rel="stylesheet" href="shared.css?v=2" />
+  <script>document.write('<link rel="stylesheet" href="shared.css?t=' + Date.now() + '">');</script>
 </head>
 <body>
   <div class="wrap">
@@ -55,8 +55,7 @@
     </div>
   </div>
 
-  <script src="data.js?v=2"></script>
-  <script src="shared.js?v=2"></script>
+  <script>(function(){var t=Date.now();document.write('<script src="data.js?t='+t+'"><\/script>');document.write('<script src="shared.js?t='+t+'"><\/script>');})();</script>
   <script>
     const menu = document.getElementById("menu");
     const topicWrap = document.getElementById("topicWrap");
