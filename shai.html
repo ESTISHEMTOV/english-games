@@ -117,8 +117,8 @@
                 speakHe("מצוין! זה " + target.he).then(() => setTimeout(round, 800));
               } else {
                 c.classList.add("wrong"); soundTry();
-                fb.className = "feedback try"; fb.textContent = "אופס, נסי שוב 🙂";
-                speakHe("לא נורא, נסי שוב");
+                fb.className = "feedback try"; fb.textContent = "אופס, עוד פעם 🙂";
+                speakHe("לא נורא, עוד פעם!");
                 setTimeout(() => c.classList.remove("wrong"), 500);
               }
             };
@@ -257,7 +257,7 @@
           showMicNote(fb);
         } else {
           fb.className = "feedback try"; fb.textContent = "לא שמעתי… לחצי שוב על המיקרופון 🎤";
-          speakHe("לא שמעתי, נסי שוב");
+          speakHe("לא שמעתי, עוד פעם");
         }
       } finally { btn.classList.remove("recording"); btn.disabled = false; }
     }
