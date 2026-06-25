@@ -237,7 +237,7 @@ function celebrateChampionship(player, num) {
   card.innerHTML =
     `<div class="cup">🏆</div>` +
     (he
-      ? `<h2>אלופה!</h2><p>זכית באליפות מספר ${num}! 🎉<br>הנקודות מתאפסות — קדימה לאליפות הבאה!</p>`
+      ? `<h2>את אלופה!</h2><p>זאת אליפות מספר ${num}! 🎉<br>הנקודות מתאפסות — קדימה לאליפות הבאה!</p>`
       : `<h2>Champion!</h2><p>You won championship #${num}! 🎉<br>Points reset — let's win another one!</p>`);
   const btn = el("button", "action next", he ? "יאללה! 🎈" : "Yay! 🎈");
   btn.onclick = () => ov.remove();
@@ -245,7 +245,7 @@ function celebrateChampionship(player, num) {
   ov.appendChild(card);
   document.body.appendChild(ov);
   setTimeout(() => confetti(160), 600);
-  speak(he ? "ניצחת אליפות! כל הכבוד!" : "You are the champion! Great job!", he ? "he-IL" : "en-US");
+  speak(he ? "כל הכבוד! את אלופה!" : "You are the champion! Great job!", he ? "he-IL" : "en-US");
 }
 
 /* ---------- בניית מסך ההתקדמות ----------
@@ -264,7 +264,7 @@ function renderProgress(container, player) {
   const fill = el("i"); fill.style.width = Math.min(100, (d.points / CHAMP_AT) * 100) + "%";
   bar.appendChild(fill); container.appendChild(bar);
 
-  container.appendChild(el("div", "level-cap", (he ? "אליפויות שזכית בהן:" : "Championships won:")));
+  container.appendChild(el("div", "level-cap", (he ? "האליפויות שלך:" : "Championships won:")));
   const tr = el("div", "trophies");
   if (d.championships > 0) tr.innerHTML = "🏆".repeat(Math.min(d.championships, 20)) + (d.championships > 20 ? " ×" + d.championships : "");
   else tr.innerHTML = `<span class="none">${he ? "עוד אין — הראשונה בדרך!" : "None yet — the first is coming!"}</span>`;
