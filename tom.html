@@ -21,8 +21,8 @@
         <button class="game-card c-pink"   onclick="Games.repeat()">
           <span class="ico">🎧</span><span class="ttl">Listen & Repeat</span><span class="sub">לפי נושאים</span>
         </button>
-        <button class="game-card c-purple" onclick="Games.phonics()">
-          <span class="ico">🔤</span><span class="ttl">First Letter</span><span class="sub">האות הראשונה והצליל</span>
+        <button class="game-card c-purple" onclick="Games.spell()">
+          <span class="ico">🔡</span><span class="ttl">Spell It!</span><span class="sub">לאיית את המילה</span>
         </button>
         <button class="game-card c-teal"   onclick="Games.phrases()">
           <span class="ico">💬</span><span class="ttl">Word Power</span><span class="sub">I can · I see · I like</span>
@@ -116,51 +116,76 @@
         });
       },
 
-      /* ---------- 2. First Letter + phonics ---------- */
-      phonics() {
+      /* ---------- 2. Spell It! — בניית המילה מאותיות מעורבבות ---------- */
+      spell() {
         showStage();
+        const pool = ALL_WORDS.filter(x => x.en.length >= 3 && x.en.length <= 8 && /^[a-z]+$/.test(x.en));
         const round = () => {
-          const w = randItem(ALL_WORDS);
-          const correct = w.en[0].toUpperCase();
-          const letters = shuffle([correct, ...sample("ABCDEFGHIJKLMNOPRSTUW".split("").filter(l => l !== correct), 3)]);
+          const w = randItem(pool);
+          const word = w.en;
+          const bank = shuffle(word.split("")).map((ch, i) => ({ ch, id: i, used: false }));
+          const placed = []; // מזהי אותיות לפי הסדר שהונחו
+
           stage.innerHTML = "";
-          stage.appendChild(el("div", "prompt-en", "What is the FIRST letter?"));
-          stage.appendChild(el("div", "prompt-he", "מה האות הראשונה במילה? לחצי עליה והגי את הצליל"));
+          stage.appendChild(el("div", "prompt-en", "Spell the word 🔡"));
+          stage.appendChild(el("div", "prompt-he", "תשמעי את המילה ובני אותה מהאותיות"));
           stage.appendChild(el("div", "big-emoji", w.emoji));
-          stage.appendChild(el("div", "big-word", w.en));
+          const slotRow = el("div", "letters");
           const fb = el("div", "feedback");
-          const row = el("div", "letters");
-          letters.forEach(L => {
-            const b = el("button", "letter-pick", L);
-            b.onclick = async () => {
-              if (L === correct) {
-                soundCorrect(); Score.add(); confetti(60);
-                fb.className = "feedback great"; fb.textContent = `Yes! "${correct}" — ${w.en} 🌟`;
-                [...row.children].forEach(c => c.disabled = true);
-                await speakEn(correct + ". " + correct + ". " + w.en, { rate: 0.7 });
-                showRepeat(w.en, fb);
+          const bankRow = el("div", "letters");
+
+          const check = () => {
+            const built = placed.map(pid => bank[pid].ch).join("");
+            if (built === word) {
+              soundCorrect(); Score.add(); confetti(80);
+              fb.className = "feedback great"; fb.textContent = `Yes! ${word} 🌟`;
+              [...bankRow.children].forEach(c => c.disabled = true);
+              speakEn(word);
+            } else {
+              soundTry();
+              fb.className = "feedback close"; fb.textContent = "Not quite — tap a letter to take it back 🙂";
+            }
+          };
+
+          const draw = () => {
+            // משבצות המילה
+            slotRow.innerHTML = "";
+            for (let i = 0; i < word.length; i++) {
+              const pid = placed[i];
+              if (pid == null) {
+                slotRow.appendChild(el("div", "letter blank", "_"));
               } else {
-                soundTry(); b.disabled = true;
-                fb.className = "feedback try"; fb.textContent = "Try again 🙂";
+                const s = el("button", "letter filled", bank[pid].ch.toUpperCase());
+                s.onclick = () => { bank[pid].used = false; placed.splice(i, 1); fb.className = "feedback"; fb.textContent = ""; draw(); };
+                slotRow.appendChild(s);
               }
-            };
-            row.appendChild(b);
-          });
-          stage.append(row, fb);
+            }
+            // מאגר האותיות
+            bankRow.innerHTML = "";
+            bank.forEach((t) => {
+              const b = el("button", "letter-pick", t.ch.toUpperCase());
+              b.disabled = t.used;
+              b.onclick = () => {
+                if (t.used || placed.length >= word.length) return;
+                t.used = true; placed.push(t.id); soundPop(); draw();
+                if (placed.length === word.length) check();
+              };
+              bankRow.appendChild(b);
+            });
+          };
+
+          draw();
+          stage.append(slotRow, fb, bankRow);
           const acts = el("div", "actions");
-          const next = el("button", "action next", "➡️ Next");
-          next.onclick = round;
-          acts.appendChild(next); stage.appendChild(acts);
-          speakEn("What is the first letter of " + w.en + "?");
+          const hear = el("button", "action listen", "🔊 Listen");
+          hear.onclick = () => speakEn(word);
+          const clear = el("button", "action ghost", "↺ Clear");
+          clear.onclick = () => { bank.forEach(t => t.used = false); placed.length = 0; fb.className = "feedback"; fb.textContent = ""; draw(); };
+          const nx = el("button", "action next", "➡️ Next");
+          nx.onclick = round;
+          acts.append(hear, clear, nx); stage.appendChild(acts);
+          speakEn("Spell the word").then(() => speakEn(word));
         };
-        // כפתור הקלטה שמופיע אחרי תשובה נכונה
-        function showRepeat(word, fb) {
-          if (stage.querySelector(".speak")) return;
-          const acts = stage.querySelector(".actions");
-          const bS = el("button", "action speak", "🎤 Say it!");
-          bS.onclick = () => recordAndScore(word, fb, bS);
-          acts.insertBefore(bS, acts.firstChild);
-        }
         round();
       },
 
