@@ -293,3 +293,33 @@ const PHRASES = [
 
 /* פירוק לצירופי מילה — לבניית כפתורי "I + can + run" */
 PHRASES.forEach((p) => (p.parts = p.en.split(" ")));
+
+/* ----- אלף-בית באנגלית (לשי) — אות + מילה לדוגמה + ציור ----- */
+const ABC = [
+  { L: "A", word: "apple",      emoji: "🍎" },
+  { L: "B", word: "ball",       emoji: "⚽" },
+  { L: "C", word: "cat",        emoji: "🐱" },
+  { L: "D", word: "dog",        emoji: "🐶" },
+  { L: "E", word: "elephant",   emoji: "🐘" },
+  { L: "F", word: "fish",       emoji: "🐟" },
+  { L: "G", word: "grapes",     emoji: "🍇" },
+  { L: "H", word: "hat",        emoji: "🎩" },
+  { L: "I", word: "ice cream",  emoji: "🍦" },
+  { L: "J", word: "jump",       emoji: "🦘" },
+  { L: "K", word: "key",        emoji: "🔑" },
+  { L: "L", word: "lion",       emoji: "🦁" },
+  { L: "M", word: "moon",       emoji: "🌙" },
+  { L: "N", word: "nose",       emoji: "👃" },
+  { L: "O", word: "orange",     emoji: "🍊" },
+  { L: "P", word: "pizza",      emoji: "🍕" },
+  { L: "Q", word: "queen",      emoji: "👑" },
+  { L: "R", word: "rabbit",     emoji: "🐰" },
+  { L: "S", word: "sun",        emoji: "☀️" },
+  { L: "T", word: "tree",       emoji: "🌳" },
+  { L: "U", word: "umbrella",   emoji: "☂️" },
+  { L: "V", word: "van",        emoji: "🚐" },
+  { L: "W", word: "water",      emoji: "💧" },
+  { L: "X", word: "box",        emoji: "📦" },
+  { L: "Y", word: "yo-yo",      emoji: "🪀" },
+  { L: "Z", word: "zebra",      emoji: "🦓" },
+];
