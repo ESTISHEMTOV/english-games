@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>המשחקים של שי 🧒</title>
+  <link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <button class="btn-back" id="back">⬅️ חזרה</button>
+      <div class="score" id="score">⭐ 0</div>
+    </div>
+
+    <!-- תפריט המשחקים -->
+    <div id="menu">
+      <h1 class="page-title">היי שי! 🧒</h1>
+      <p class="subtitle">איזה משחק נשחק היום?</p>
+      <div class="games-grid">
+        <button class="game-card c-pink"   onclick="Games.flash()">
+          <span class="ico">🎧</span><span class="ttl">שמעי וחזרי</span><span class="sub">לשמוע מילה ולחזור</span>
+        </button>
+        <button class="game-card c-blue"   onclick="Games.find()">
+          <span class="ico">🔍</span><span class="ttl">מצאי את התמונה</span><span class="sub">לשמוע ולמצוא</span>
+        </button>
+        <button class="game-card c-yellow" onclick="Games.colors()">
+          <span class="ico">🌈</span><span class="ttl">צבעים</span><span class="sub">ללמוד צבעים</span>
+        </button>
+        <button class="game-card c-green"  onclick="Games.memory()">
+          <span class="ico">🃏</span><span class="ttl">מצאי את הזוג</span><span class="sub">משחק זיכרון</span>
+        </button>
+        <button class="game-card c-purple" onclick="Games.progress()">
+          <span class="ico">🏆</span><span class="ttl">הנקודות שלי</span><span class="sub">שלבים ואליפויות</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- מסך המשחק -->
+    <div id="stageWrap" class="hidden">
+      <div class="stage" id="stage"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const stageWrap = document.getElementById("stageWrap");
+    const stage = document.getElementById("stage");
+    const menu = document.getElementById("menu");
+    Score.init(document.getElementById("score"), "shai");
+
+    document.getElementById("back").onclick = () => {
+      if (!stageWrap.classList.contains("hidden")) { showMenu(); }
+      else { location.href = "index.html"; }
+    };
+    function showMenu() { speechSynthesis && speechSynthesis.cancel(); stageWrap.classList.add("hidden"); menu.classList.remove("hidden"); }
+    function showStage() { menu.classList.add("hidden"); stageWrap.classList.remove("hidden"); stage.innerHTML = ""; }
+
+    // מאגר מילים ידידותי לבת 5 (פשוטות וחזותיות)
+    const EASY = ALL_WORDS.filter(w => ["animals","food","colors","nature","things"].includes(w.topic));
+
+    const Games = {
+      /* ---------- 1. שמעי וחזרי ---------- */
+      flash() {
+        showStage();
+        let pool = shuffle(EASY);
+        let i = 0;
+        const render = () => {
+          const w = pool[i % pool.length];
+          stage.innerHTML = "";
+          stage.appendChild(el("div", "prompt-he", "תשמעי את המילה… ותגידי אותה גם את! 🗣️"));
+          stage.appendChild(el("div", "big-emoji", w.emoji));
+          stage.appendChild(el("div", "big-word", w.en));
+          const fb = el("div", "feedback"); stage.appendChild(fb);
+          const acts = el("div", "actions");
+
+          const bListen = el("button", "action listen", "🔊 שמעי");
+          bListen.onclick = async () => { fb.className = "feedback"; fb.textContent = ""; await speakEn(w.en); };
+
+          const bSpeak = el("button", "action speak", "🎤 תורי!");
+          bSpeak.onclick = () => recordAndScore(w, fb, bSpeak, "he");
+
+          const bNext = el("button", "action next", "➡️ עוד מילה");
+          bNext.onclick = () => { i++; render(); };
+
+          acts.append(bListen, bSpeak, bNext);
+          stage.appendChild(acts);
+
+          // הוראה קולית + הקראת המילה
+          speakHe("תשמעי את המילה ותגידי אותה").then(() => speakEn(w.en));
+        };
+        render();
+      },
+
+      /* ---------- 2. מצאי את התמונה ---------- */
+      find(list) {
+        showStage();
+        const source = list || EASY;
+        const round = () => {
+          const opts = sample(source, 4);
+          const target = randItem(opts);
+          stage.innerHTML = "";
+          stage.appendChild(el("div", "prompt-he", "תשמעי איזו מילה… ותלחצי על התמונה הנכונה! 👆"));
+          const fb = el("div", "feedback");
+          const choices = el("div", "choices");
+          opts.forEach(o => {
+            const c = el("button", "choice");
+            c.innerHTML = `<span class="ce">${o.emoji}</span>`;
+            c.onclick = () => {
+              if (o.en === target.en) {
+                c.classList.add("correct"); soundCorrect(); Score.add(); confetti(70);
+                fb.className = "feedback great"; fb.textContent = "כל הכבוד! 🎉";
+                speakHe("מצוין! זה " + target.he);
+                setTimeout(round, 1500);
+              } else {
+                c.classList.add("wrong"); soundTry();
+                fb.className = "feedback try"; fb.textContent = "אופס, נסי שוב 🙂";
+                speakHe("לא נורא, נסי שוב");
+                setTimeout(() => c.classList.remove("wrong"), 500);
+              }
+            };
+            choices.appendChild(c);
+          });
+          stage.appendChild(choices);
+          stage.appendChild(fb);
+          const hear = el("div", "actions");
+          const b = el("button", "action listen", "🔊 שמעי שוב");
+          b.onclick = () => speakEn(target.en);
+          hear.appendChild(b); stage.appendChild(hear);
+          speakHe("איפה").then(() => speakEn(target.en));
+        };
+        round();
+      },
+
+      /* ---------- 3. צבעים ---------- */
+      colors() { this.find(ALL_WORDS.filter(w => w.topic === "colors")); },
+
+      /* ---------- 4. משחק זיכרון (תמונות) ---------- */
+      memory() {
+        showStage();
+        const picks = sample(EASY, 6);
+        const deck = shuffle([...picks, ...picks].map((w, idx) => ({ ...w, uid: idx })));
+        stage.innerHTML = "";
+        stage.appendChild(el("div", "prompt-he", "מצאי את שני הקלפים הזהים! 🃏"));
+        const grid = el("div", "memory");
+        let first = null, lock = false, matched = 0;
+        deck.forEach((w) => {
+          const card = el("button", "mcard");
+          card.innerHTML = `<span class="back">❓</span><span class="face">${w.emoji}</span>`;
+          card.onclick = () => {
+            if (lock || card.classList.contains("up") || card.classList.contains("matched")) return;
+            soundPop(); card.classList.add("up");
+            if (!first) { first = { card, w }; return; }
+            if (first.w.en === w.en) {
+              card.classList.add("matched"); first.card.classList.add("matched");
+              soundCorrect(); Score.add(); matched++;
+              speakEn(w.en).then(() => speakHe("זה " + w.he));
+              first = null;
+              if (matched === picks.length) { confetti(150); soundWin(); speakHe("ניצחת! כל הכבוד!"); }
+            } else {
+              lock = true;
+              setTimeout(() => { card.classList.remove("up"); first.card.classList.remove("up"); first = null; lock = false; }, 900);
+            }
+          };
+          grid.appendChild(card);
+        });
+        stage.appendChild(grid);
+        speakHe("מצאי את שני הקלפים הזהים");
+      },
+
+      /* ---------- 🏆 הנקודות שלי ---------- */
+      progress() {
+        showStage();
+        renderProgress(stage, "shai");
+        speakHe("אלה הנקודות שלך. כל הכבוד!");
+      },
+    };
+
+    /* מציג הודעה ידידותית כשאין גישה למיקרופון */
+    function showMicNote(fb) {
+      if (stage.querySelector(".mic-note")) return;
+      const note = el("div", "mic-note",
+        "🎤 כדי לחזור על המילים צריך מיקרופון.<br>פתחי את המשחק עם הקובץ <b>הפעלה.bat</b> (נפתח ב-Chrome), ואשרי גישה למיקרופון.<br>בינתיים אפשר להמשיך לשמוע ולתרגל 🙂");
+      stage.appendChild(note);
+    }
+
+    /* הקלטה + משוב הגייה (משוב בעברית עבור שי) */
+    async function recordAndScore(w, fb, btn, fbLang) {
+      if (!RECOGNITION_OK) {
+        fb.className = "feedback great"; fb.textContent = "יופי! חזרת על המילה 👏";
+        Score.add(); soundCorrect(); speakHe("יופי!"); return;
+      }
+      // ביקוש הרשאת מיקרופון (חלון אישור מופיע פעם אחת)
+      fb.className = "feedback heard"; fb.textContent = "🎤 רגע…";
+      const ok = await ensureMic();
+      if (!ok) {
+        fb.className = "feedback try"; fb.textContent = "אין גישה למיקרופון 🎤";
+        showMicNote(fb); speakHe("צריך לאשר מיקרופון"); return;
+      }
+      btn.classList.add("recording"); btn.disabled = true;
+      fb.className = "feedback heard"; fb.textContent = "🎤 מקשיבה לך…";
+      try {
+        const res = await listen("en-US");
+        const verdict = scorePronunciation(w.en, res.alternatives);
+        if (verdict === "great") {
+          fb.className = "feedback great"; fb.textContent = "מושלם! אמרת נהדר! 🌟";
+          Score.add(); soundCorrect(); confetti(70); speakHe("מצוין! אמרת יפה מאוד");
+        } else if (verdict === "close") {
+          fb.className = "feedback close"; fb.textContent = "כמעט! בואי נשמע שוב 👂";
+          soundTry(); await speakHe("כמעט! תקשיבי שוב"); await speakEnSlow(w.en);
+        } else {
+          fb.className = "feedback try"; fb.textContent = "בואי ננסה שוב יחד 🙂";
+          soundTry(); await speakHe("בואי נשמע שוב"); await speakEnSlow(w.en);
+        }
+      } catch (e) {
+        if (isMicPermissionError(e)) {
+          fb.className = "feedback try"; fb.textContent = "אין גישה למיקרופון 🎤";
+          showMicNote(fb);
+        } else {
+          fb.className = "feedback try"; fb.textContent = "לא שמעתי… לחצי שוב על המיקרופון 🎤";
+          speakHe("לא שמעתי, נסי שוב");
+        }
+      } finally { btn.classList.remove("recording"); btn.disabled = false; }
+    }
+
+    // הוראת פתיחה
+    document.addEventListener("pointerdown", () => {}, { once: true });
+  </script>
+</body>
+</html>
