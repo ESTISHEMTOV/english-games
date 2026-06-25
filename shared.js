@@ -231,28 +231,30 @@ function soundLevelUp() { try { tone(880, 0, 0.08, "sine", 0.1); } catch (e) {} 
 /* ---------- חגיגת אליפות 🏆 ---------- */
 function celebrateChampionship(player, num) {
   soundWin(); confetti(220);
-  const he = player === "shai";
+  const en = player === "tom";          // תום — אנגלית
+  const m = player === "yonatan";       // יונתן — עברית לשון זכר
   const ov = el("div", "champ-overlay");
   const card = el("div", "champ-card");
-  card.innerHTML =
-    `<div class="cup">🏆</div>` +
-    (he
-      ? `<h2>את אלופה!</h2><p>זאת אליפות מספר ${num}! 🎉<br>הנקודות מתאפסות — קדימה לאליפות הבאה!</p>`
-      : `<h2>Champion!</h2><p>You won championship #${num}! 🎉<br>Points reset — let's win another one!</p>`);
-  const btn = el("button", "action next", he ? "יאללה! 🎈" : "Yay! 🎈");
+  let html;
+  if (en) html = `<h2>Champion!</h2><p>You won championship #${num}! 🎉<br>Points reset — let's win another one!</p>`;
+  else if (m) html = `<h2>אתה אלוף!</h2><p>זאת אליפות מספר ${num}! 🎉<br>הנקודות מתאפסות — קדימה לאליפות הבאה!</p>`;
+  else html = `<h2>את אלופה!</h2><p>זאת אליפות מספר ${num}! 🎉<br>הנקודות מתאפסות — קדימה לאליפות הבאה!</p>`;
+  card.innerHTML = `<div class="cup">🏆</div>` + html;
+  const btn = el("button", "action next", en ? "Yay! 🎈" : "יאללה! 🎈");
   btn.onclick = () => ov.remove();
   card.appendChild(btn);
   ov.appendChild(card);
   document.body.appendChild(ov);
   setTimeout(() => confetti(160), 600);
-  speak(he ? "כל הכבוד! את אלופה!" : "You are the champion! Great job!", he ? "he-IL" : "en-US");
+  const say = en ? "You are the champion! Great job!" : (m ? "כל הכבוד! אתה אלוף!" : "כל הכבוד! את אלופה!");
+  speak(say, en ? "en-US" : "he-IL");
 }
 
 /* ---------- בניית מסך ההתקדמות ----------
    ממלא container ב: שלב נוכחי, פס התקדמות, אליפויות, וטבלת נקודות יומית.
 */
 function renderProgress(container, player) {
-  const he = player === "shai";
+  const he = player !== "tom";   // עברית לכולם חוץ מתום (אנגלית)
   const d = Progress.load(player);
   container.innerHTML = "";
 
@@ -275,7 +277,7 @@ function renderProgress(container, player) {
   const table = el("table", "days-table");
   table.innerHTML = `<tr><th>${he ? "תאריך" : "Date"}</th><th>${he ? "נקודות" : "Points"}</th></tr>`;
   if (dates.length === 0) {
-    const row = el("tr"); row.innerHTML = `<td colspan="2" class="days-empty">${he ? "עדיין לא שיחקת — בואי נתחיל!" : "No games yet — let's start!"}</td>`;
+    const row = el("tr"); row.innerHTML = `<td colspan="2" class="days-empty">${he ? "עדיין אין נקודות — אפשר להתחיל!" : "No games yet — let's start!"}</td>`;
     table.appendChild(row);
   } else {
     const today = Progress.today();
