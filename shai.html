@@ -21,6 +21,9 @@
         <button class="game-card c-pink"   onclick="Games.flash()">
           <span class="ico">🎧</span><span class="ttl">שמעי וחזרי</span><span class="sub">לשמוע מילה ולחזור</span>
         </button>
+        <button class="game-card c-teal"   onclick="Games.abc()">
+          <span class="ico">🔤</span><span class="ttl">אותיות ABC</span><span class="sub">ללמוד את האותיות</span>
+        </button>
         <button class="game-card c-blue"   onclick="Games.find()">
           <span class="ico">🔍</span><span class="ttl">מצאי את התמונה</span><span class="sub">לשמוע ולמצוא</span>
         </button>
@@ -111,8 +114,8 @@
               if (o.en === target.en) {
                 c.classList.add("correct"); soundCorrect(); Score.add(); confetti(70);
                 fb.className = "feedback great"; fb.textContent = "כל הכבוד! 🎉";
-                speakHe("מצוין! זה " + target.he);
-                setTimeout(round, 1500);
+                // ממתינים שההקראה תסיים את המילה ורק אז עוברים הלאה
+                speakHe("מצוין! זה " + target.he).then(() => setTimeout(round, 800));
               } else {
                 c.classList.add("wrong"); soundTry();
                 fb.className = "feedback try"; fb.textContent = "אופס, נסי שוב 🙂";
@@ -136,6 +139,32 @@
       /* ---------- 3. צבעים ---------- */
       colors() { this.find(ALL_WORDS.filter(w => w.topic === "colors")); },
 
+      /* ---------- ABC — לימוד האותיות ---------- */
+      abc() {
+        showStage();
+        let i = 0;
+        const render = () => {
+          const it = ABC[i % ABC.length];
+          stage.innerHTML = "";
+          stage.appendChild(el("div", "prompt-he", "תשמעי את האות… ותגידי אותה גם את! 🔤"));
+          stage.appendChild(el("div", "big-word", it.L + " " + it.L.toLowerCase()));
+          stage.appendChild(el("div", "big-emoji", it.emoji));
+          stage.appendChild(el("div", "prompt-en", it.word));
+          const fb = el("div", "feedback");
+          const acts = el("div", "actions");
+          const bL = el("button", "action listen", "🔊 שמעי");
+          bL.onclick = () => { fb.className = "feedback"; fb.textContent = ""; speakEn(it.L).then(() => speakEn(it.word)); };
+          const bS = el("button", "action speak", "🎤 תורי!");
+          bS.onclick = () => recordAndScore({ en: it.L, he: it.L }, fb, bS, "he");
+          const bN = el("button", "action next", "➡️ האות הבאה");
+          bN.onclick = () => { i++; render(); };
+          acts.append(bL, bS, bN);
+          stage.append(fb, acts);
+          speakHe("האות").then(() => speakEn(it.L)).then(() => speakEn(it.word));
+        };
+        render();
+      },
+
       /* ---------- 4. משחק זיכרון (תמונות) ---------- */
       memory() {
         showStage();
@@ -151,16 +180,26 @@
           card.onclick = () => {
             if (lock || card.classList.contains("up") || card.classList.contains("matched")) return;
             soundPop(); card.classList.add("up");
-            if (!first) { first = { card, w }; return; }
+            speakEn(w.en);                 // אומרת את המילה באנגלית בכל היפוך קלף
+            lock = true;                   // נעילה כדי שתספיק להגיד את המילה
+            if (!first) {
+              first = { card, w };
+              setTimeout(() => { lock = false; }, 1500);
+              return;
+            }
+            // קלף שני
             if (first.w.en === w.en) {
               card.classList.add("matched"); first.card.classList.add("matched");
-              soundCorrect(); Score.add(); matched++;
-              speakEn(w.en).then(() => speakHe("זה " + w.he));
-              first = null;
-              if (matched === picks.length) { confetti(150); soundWin(); speakHe("ניצחת! כל הכבוד!"); }
+              Score.add(); matched++;
+              setTimeout(() => {
+                soundCorrect(); first = null; lock = false;
+                if (matched === picks.length) { confetti(150); soundWin(); speakHe("יש! כל הכבוד!"); }
+              }, 1500);
             } else {
-              lock = true;
-              setTimeout(() => { card.classList.remove("up"); first.card.classList.remove("up"); first = null; lock = false; }, 900);
+              setTimeout(() => {
+                card.classList.remove("up"); first.card.classList.remove("up");
+                first = null; lock = false;
+              }, 1500);
             }
           };
           grid.appendChild(card);
@@ -188,7 +227,7 @@
     /* הקלטה + משוב הגייה (משוב בעברית עבור שי) */
     async function recordAndScore(w, fb, btn, fbLang) {
       if (!RECOGNITION_OK) {
-        fb.className = "feedback great"; fb.textContent = "יופי! חזרת על המילה 👏";
+        fb.className = "feedback great"; fb.textContent = "יופי! כל הכבוד 👏";
         Score.add(); soundCorrect(); speakHe("יופי!"); return;
       }
       // ביקוש הרשאת מיקרופון (חלון אישור מופיע פעם אחת)
@@ -204,8 +243,8 @@
         const res = await listen("en-US");
         const verdict = scorePronunciation(w.en, res.alternatives);
         if (verdict === "great") {
-          fb.className = "feedback great"; fb.textContent = "מושלם! אמרת נהדר! 🌟";
-          Score.add(); soundCorrect(); confetti(70); speakHe("מצוין! אמרת יפה מאוד");
+          fb.className = "feedback great"; fb.textContent = "מושלם! נהדר! 🌟";
+          Score.add(); soundCorrect(); confetti(70); speakHe("מצוין! יפה מאוד!");
         } else if (verdict === "close") {
           fb.className = "feedback close"; fb.textContent = "כמעט! בואי נשמע שוב 👂";
           soundTry(); await speakHe("כמעט! תקשיבי שוב"); await speakEnSlow(w.en);
