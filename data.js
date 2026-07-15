@@ -299,7 +299,7 @@ PHRASES.forEach((p) => (p.parts = p.en.split(" ")));
    שי + ליה — לשון נקבה; יונתן — לשון זכר. */
 const ABOUT_ME = {
   shai: [
-    { emoji: "👋",  en: "Hi! My name is Shai.",  he: "היי! קוראים לי שי." },
+    { emoji: "👋",  en: "Hi! My name is Shai.",  he: "הֵיי! קוראים לי שי." },
     { emoji: "🖐️", en: "I am five years old.",   he: "אני בת חמש." },
     { emoji: "👧",  en: "I am a girl.",           he: "אני ילדה." },
     { emoji: "🏡",  en: "I live in Tzrufa.",      he: "אני גרה בצרופה." },
@@ -309,7 +309,7 @@ const ABOUT_ME = {
     { emoji: "😊",  en: "Nice to meet you!",      he: "נעים להכיר!" },
   ],
   lia: [
-    { emoji: "👋",  en: "Hi! My name is Lia.",    he: "היי! קוראים לי ליה." },
+    { emoji: "👋",  en: "Hi! My name is Lia.",    he: "הֵיי! קוראים לי ליה." },
     { emoji: "🖐️", en: "I am five years old.",   he: "אני בת חמש." },
     { emoji: "👧",  en: "I am a girl.",           he: "אני ילדה." },
     { emoji: "🏡",  en: "I live in Tzrufa.",      he: "אני גרה בצרופה." },
@@ -319,7 +319,7 @@ const ABOUT_ME = {
     { emoji: "😊",  en: "Nice to meet you!",      he: "נעים להכיר!" },
   ],
   yonatan: [
-    { emoji: "👋",  en: "Hi! My name is Yonatan.", he: "היי! קוראים לי יונתן." },
+    { emoji: "👋",  en: "Hi! My name is Yonatan.", he: "הֵיי! קוראים לי יונתן." },
     { emoji: "🖐️", en: "I am six years old.",     he: "אני בן שש." },
     { emoji: "👦",  en: "I am a boy.",             he: "אני ילד." },
     { emoji: "🏡",  en: "I live in Tzrufa.",       he: "אני גר בצרופה." },
