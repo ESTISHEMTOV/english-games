@@ -15,7 +15,7 @@
 
     <!-- תפריט המשחקים -->
     <div id="menu">
-      <h1 class="page-title">היי ליה! 🧒</h1>
+      <h1 class="page-title">היי ליה! 👧🏼</h1>
       <p class="subtitle">איזה משחק נשחק היום?</p>
       <div class="games-grid">
         <button class="game-card c-peach"  onclick="Games.about()">
@@ -79,7 +79,7 @@
           stage.appendChild(el("div", "big-emoji", s.emoji));
           stage.appendChild(el("div", "sentence-en", s.en));
           const heBtn = el("button", "sentence-he he-say", "🔈 " + s.he);
-          heBtn.onclick = () => speakHe(s.he);
+          heBtn.onclick = () => { try { speechSynthesis.cancel(); speechSynthesis.resume(); } catch (e) {} setTimeout(() => speakHe(s.he), 90); };
           stage.appendChild(heBtn);
           const fb = el("div", "feedback");
           const acts = el("div", "actions");
