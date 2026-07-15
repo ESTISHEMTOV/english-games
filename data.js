@@ -294,6 +294,42 @@ const PHRASES = [
 /* פירוק לצירופי מילה — לבניית כפתורי "I + can + run" */
 PHRASES.forEach((p) => (p.parts = p.en.split(" ")));
 
+/* ----- "קצת עליי" — משפטי היכרות בסיסיים (לכל ילד) -----
+   קל לעריכה: אפשר לשנות שם/גיל/מקום/אחים לפי הצורך.
+   שי + ליה — לשון נקבה; יונתן — לשון זכר. */
+const ABOUT_ME = {
+  shai: [
+    { emoji: "👋",  en: "Hi! My name is Shai.",  he: "היי! קוראים לי שי." },
+    { emoji: "🖐️", en: "I am five years old.",   he: "אני בת חמש." },
+    { emoji: "👧",  en: "I am a girl.",           he: "אני ילדה." },
+    { emoji: "🏡",  en: "I live in Tzrufa.",      he: "אני גרה בצרופה." },
+    { emoji: "👭",  en: "I have two sisters.",    he: "יש לי שתי אחיות." },
+    { emoji: "❤️", en: "I love my family.",      he: "אני אוהבת את המשפחה שלי." },
+    { emoji: "🧸",  en: "I like to play.",        he: "אני אוהבת לשחק." },
+    { emoji: "😊",  en: "Nice to meet you!",      he: "נעים להכיר!" },
+  ],
+  lia: [
+    { emoji: "👋",  en: "Hi! My name is Lia.",    he: "היי! קוראים לי ליה." },
+    { emoji: "🖐️", en: "I am five years old.",   he: "אני בת חמש." },
+    { emoji: "👧",  en: "I am a girl.",           he: "אני ילדה." },
+    { emoji: "🏡",  en: "I live in Tzrufa.",      he: "אני גרה בצרופה." },
+    { emoji: "❤️", en: "I love my family.",      he: "אני אוהבת את המשפחה שלי." },
+    { emoji: "🧸",  en: "I like to play.",        he: "אני אוהבת לשחק." },
+    { emoji: "🌈",  en: "I like colors.",         he: "אני אוהבת צבעים." },
+    { emoji: "😊",  en: "Nice to meet you!",      he: "נעים להכיר!" },
+  ],
+  yonatan: [
+    { emoji: "👋",  en: "Hi! My name is Yonatan.", he: "היי! קוראים לי יונתן." },
+    { emoji: "🖐️", en: "I am six years old.",     he: "אני בן שש." },
+    { emoji: "👦",  en: "I am a boy.",             he: "אני ילד." },
+    { emoji: "🏡",  en: "I live in Tzrufa.",       he: "אני גר בצרופה." },
+    { emoji: "❤️", en: "I love my family.",       he: "אני אוהב את המשפחה שלי." },
+    { emoji: "🧸",  en: "I like to play.",         he: "אני אוהב לשחק." },
+    { emoji: "🚗",  en: "I like cars.",            he: "אני אוהב מכוניות." },
+    { emoji: "😊",  en: "Nice to meet you!",       he: "נעים להכיר!" },
+  ],
+};
+
 /* ----- אלף-בית באנגלית (לשי) — אות + מילה לדוגמה + ציור ----- */
 const ABC = [
   { L: "A", word: "apple",      emoji: "🍎" },

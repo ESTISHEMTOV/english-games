@@ -18,6 +18,9 @@
       <h1 class="page-title">היי ליה! 🧒</h1>
       <p class="subtitle">איזה משחק נשחק היום?</p>
       <div class="games-grid">
+        <button class="game-card c-peach"  onclick="Games.about()">
+          <span class="ico">💬</span><span class="ttl">קצת עליי</span><span class="sub">להציג את עצמי באנגלית</span>
+        </button>
         <button class="game-card c-pink"   onclick="Games.flash()">
           <span class="ico">🎧</span><span class="ttl">שמעי וחזרי</span><span class="sub">לשמוע מילה ולחזור</span>
         </button>
@@ -63,6 +66,37 @@
     const EASY = ALL_WORDS.filter(w => ["animals","food","colors","nature","things"].includes(w.topic));
 
     const Games = {
+      /* ---------- 💬 קצת עליי — משפטי היכרות ---------- */
+      about() {
+        showStage();
+        const SENT = ABOUT_ME.lia;
+        let i = 0;
+        const render = () => {
+          const s = SENT[i];
+          stage.innerHTML = "";
+          stage.appendChild(el("div", "prompt-he", "ככה מספרים על עצמי 🌟 תשמעי ותגידי גם את!"));
+          stage.appendChild(el("div", "dots", SENT.map((_, k) => `<span class="${k <= i ? 'on' : ''}"></span>`).join("")));
+          stage.appendChild(el("div", "big-emoji", s.emoji));
+          stage.appendChild(el("div", "sentence-en", s.en));
+          const heBtn = el("button", "sentence-he he-say", "🔈 " + s.he);
+          heBtn.onclick = () => speakHe(s.he);
+          stage.appendChild(heBtn);
+          const fb = el("div", "feedback");
+          const acts = el("div", "actions");
+          const bL = el("button", "action listen", "🔊 שמעי");
+          bL.onclick = async () => { fb.className = "feedback"; fb.textContent = ""; await speakEn(s.en); };
+          const bS = el("button", "action speak", "🎤 תורי!");
+          bS.onclick = () => sayAndCheer(s, fb, bS);
+          const last = i >= SENT.length - 1;
+          const bN = el("button", "action next", last ? "🎉 סיימתי!" : "➡️ עוד משפט");
+          bN.onclick = () => { if (last) { finishAbout(); } else { i++; render(); } };
+          acts.append(bL, bS, bN);
+          stage.append(fb, acts);
+          speakHe("תגידי").then(() => speakEn(s.en));
+        };
+        render();
+      },
+
       /* ---------- 1. שמעי וחזרי ---------- */
       flash() {
         showStage();
@@ -214,6 +248,56 @@
         speakHe("אלה הנקודות שלך. כל הכבוד!");
       },
     };
+
+    /* אמירת משפט במשחק "קצת עליי" — משוב מעודד ורחום (לגיל 5) */
+    async function sayAndCheer(s, fb, btn) {
+      if (!RECOGNITION_OK) {
+        fb.className = "feedback great"; fb.textContent = "כל הכבוד! 👏";
+        Score.add(); soundCorrect(); speakHe("כל הכבוד!"); return;
+      }
+      fb.className = "feedback heard"; fb.textContent = "🎤 רגע…";
+      const ok = await ensureMic();
+      if (!ok) {
+        fb.className = "feedback try"; fb.textContent = "אין גישה למיקרופון 🎤";
+        showMicNote(fb); speakHe("צריך לאשר מיקרופון"); return;
+      }
+      btn.classList.add("recording"); btn.disabled = true;
+      fb.className = "feedback heard"; fb.textContent = "🎤 מקשיבה לך…";
+      try {
+        const res = await listen("en-US");
+        const verdict = scorePronunciation(s.en, res.alternatives);
+        if (verdict === "try") {
+          fb.className = "feedback close"; fb.textContent = "יופי שניסית! בואי נשמע שוב 👂";
+          soundTry(); await speakHe("יופי! תקשיבי שוב"); await speakEnSlow(s.en);
+        } else {
+          fb.className = "feedback great"; fb.textContent = verdict === "great" ? "מושלם! 🌟" : "יפה מאוד! 👏";
+          Score.add(); soundCorrect(); confetti(60); speakHe("כל הכבוד!");
+        }
+      } catch (e) {
+        if (isMicPermissionError(e)) {
+          fb.className = "feedback try"; fb.textContent = "אין גישה למיקרופון 🎤"; showMicNote(fb);
+        } else {
+          fb.className = "feedback try"; fb.textContent = "לא שמעתי… לחצי שוב על המיקרופון 🎤";
+          speakHe("לא שמעתי, עוד פעם");
+        }
+      } finally { btn.classList.remove("recording"); btn.disabled = false; }
+    }
+
+    /* מסך סיום למשחק "קצת עליי" */
+    function finishAbout() {
+      stage.innerHTML = "";
+      confetti(180); soundWin();
+      stage.appendChild(el("div", "big-emoji", "🌟"));
+      stage.appendChild(el("div", "prompt-he", "כל הכבוד ליה! עכשיו את יודעת לספר על עצמך באנגלית! 🎉"));
+      const acts = el("div", "actions");
+      const again = el("button", "action next", "🔁 עוד פעם");
+      again.onclick = () => Games.about();
+      const toMenu = el("button", "action ghost", "🏠 לתפריט");
+      toMenu.onclick = showMenu;
+      acts.append(again, toMenu);
+      stage.appendChild(acts);
+      speakHe("כל הכבוד! עכשיו את יודעת לספר על עצמך באנגלית");
+    }
 
     /* מציג הודעה ידידותית כשאין גישה למיקרופון */
     function showMicNote(fb) {

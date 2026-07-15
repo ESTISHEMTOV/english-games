@@ -129,6 +129,9 @@ h1.page-title {
 .picker:hover { transform: translateY(-8px) scale(1.02); }
 .picker:active { transform: scale(.97); }
 .picker .ava { font-size: 96px; display: block; margin-bottom: 6px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.18)); }
+.ava-svg { width: 108px; height: auto; display: block; margin: 0 auto; }
+.hero-ava { display: flex; justify-content: center; margin-bottom: 2px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.15)); }
+.hero-ava .ava-svg { width: 96px; }
 .picker .name { display: block; font-size: 46px; font-weight: 900; }
 .picker .age { display: block; font-size: 22px; opacity: .95; margin-top: 6px; }
 .picker.shai    { background: linear-gradient(160deg, #ff7eb3, #ff5d8f 60%, #ff4d6d); }
@@ -199,6 +202,40 @@ h1.page-title {
   letter-spacing: 2px;
   direction: ltr;
 }
+
+/* משפטים (משחק "קצת עליי") */
+.sentence-en {
+  font-size: clamp(26px, 6vw, 46px);
+  font-weight: 900;
+  direction: ltr;
+  color: var(--ink);
+  line-height: 1.15;
+  padding: 0 8px;
+}
+.sentence-he {
+  font-size: clamp(18px, 4vw, 26px);
+  font-weight: 800;
+  color: var(--ink-soft);
+  unicode-bidi: isolate;
+}
+/* שורת העברית כלחיצה — לוחצים כדי לשמוע את ההסבר */
+.he-say {
+  font-family: inherit;
+  border: 2px dashed #d9b3e6;
+  background: #faf5ff;
+  border-radius: 16px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: transform .12s ease, background .12s ease;
+}
+.he-say:hover { transform: translateY(-2px); background: #f3e8ff; }
+.he-say:active { transform: scale(.96); }
+.dots { display: flex; gap: 8px; justify-content: center; }
+.dots span {
+  width: 12px; height: 12px; border-radius: 999px;
+  background: #e6e1ef; box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+}
+.dots span.on { background: linear-gradient(160deg, #ff8fb1, var(--pink)); }
 
 @keyframes pop { 0% { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
 
