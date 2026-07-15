@@ -312,10 +312,10 @@ const ABOUT_ME = {
     { emoji: "👋",  en: "Hi! My name is Lia.",    he: "הֵיי! קוראים לי ליה." },
     { emoji: "🖐️", en: "I am five years old.",   he: "אני בת חמש." },
     { emoji: "👧",  en: "I am a girl.",           he: "אני ילדה." },
-    { emoji: "🏡",  en: "I live in Tzrufa.",      he: "אני גרה בצרופה." },
+    { emoji: "🏡",  en: "I live in Ein Ayala.",   he: "אני גרה בעין איילה." },
+    { emoji: "👧",  en: "I have one sister.",     he: "יש לי אחות אחת." },
     { emoji: "❤️", en: "I love my family.",      he: "אני אוהבת את המשפחה שלי." },
     { emoji: "🧸",  en: "I like to play.",        he: "אני אוהבת לשחק." },
-    { emoji: "🌈",  en: "I like colors.",         he: "אני אוהבת צבעים." },
     { emoji: "😊",  en: "Nice to meet you!",      he: "נעים להכיר!" },
   ],
   yonatan: [
@@ -323,9 +323,9 @@ const ABOUT_ME = {
     { emoji: "🖐️", en: "I am six years old.",     he: "אני בן שש." },
     { emoji: "👦",  en: "I am a boy.",             he: "אני ילד." },
     { emoji: "🏡",  en: "I live in Tzrufa.",       he: "אני גר בצרופה." },
+    { emoji: "👧",  en: "I have one sister.",      he: "יש לי אחות אחת." },
     { emoji: "❤️", en: "I love my family.",       he: "אני אוהב את המשפחה שלי." },
     { emoji: "🧸",  en: "I like to play.",         he: "אני אוהב לשחק." },
-    { emoji: "🚗",  en: "I like cars.",            he: "אני אוהב מכוניות." },
     { emoji: "😊",  en: "Nice to meet you!",       he: "נעים להכיר!" },
   ],
 };
