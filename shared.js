@@ -36,6 +36,8 @@ function speak(text, lang = "en-US", { rate = 0.95, pitch = 1.05 } = {}) {
     u.onend = resolve;
     u.onerror = resolve;
     speechSynthesis.speak(u);
+    // תיקון באג כרום: אחרי cancel() דיבור חדש נשאר שקט עד resume() (no-op כשלא מושהה)
+    try { speechSynthesis.resume(); } catch (e) {}
   });
 }
 const speakHe = (t, o = {}) => speak(t, "he-IL", { rate: 0.95, pitch: 1.05, ...o });
